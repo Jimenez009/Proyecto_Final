@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Gestión de Puestos</title>
+    <h:outputStylesheet name="css/estilos.css" />
+</h:head>
+<h:body style="padding: 20px; background-color:#f4f6f9;">
+
+    <h:form id="formMenu">
+        <p:menubar>
+            <p:menuitem value="Dashboard" icon="pi pi-fw pi-home" url="dashboard.xhtml" />
+            <p:menuitem value="Empleados" icon="pi pi-fw pi-users" url="empleados.xhtml" />
+            <p:menuitem value="Puestos" icon="pi pi-fw pi-briefcase" url="puestos.xhtml" />
+            <p:menuitem value="Usuarios" icon="pi pi-fw pi-user" url="usuarios.xhtml" />
+            <p:menuitem value="Marcaciones" icon="pi pi-fw pi-clock" url="marcaciones.xhtml" />
+            <p:divider layout="vertical" />
+            <p:menuitem value="Cerrar Sesión" icon="pi pi-fw pi-power-off" action="#{loginBean.cerrarSesion}" />
+        </p:menubar>
+    </h:form>
+
+    <h:form id="formPuestos" style="margin-top:20px;">
+        <p:growl id="messages" showDetail="true" />
+
+        <p:panel header="Listado de Puestos">
+            <p:commandButton value="Nuevo Puesto" icon="pi pi-plus"
+                             oncomplete="PF('dlgPuesto').show()"
+                             styleClass="ui-button-success" style="margin-bottom: 10px;" />
+
+            <p:dataTable id="dtPuestos" value="#{puestoBean.listaPuestos}" var="p"
+                         paginator="true" rows="10" responsiveLayout="scroll">
+                <p:column headerText="ID">
+                    <h:outputText value="#{p.idPuesto}" />
+                </p:column>
+                <p:column headerText="Nombre del Puesto">
+                    <h:outputText value="#{p.nombre}" />
+                </p:column>
+                <p:column headerText="Descripción">
+                    <h:outputText value="#{p.descripcion}" />
+                </p:column>
+            </p:dataTable>
+        </p:panel>
+    </h:form>
+
+    <!-- Diálogo Registrar Puesto -->
+    <p:dialog header="Registrar Nuevo Puesto" widgetVar="dlgPuesto" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+        <h:form id="formNuevoPuesto">
+            <div class="ui-fluid">
+                <div style="margin-bottom: 1rem;">
+                    <p:outputLabel for="nombrePuesto" value="Nombre" />
+                    <p:inputText id="nombrePuesto" value="#{puestoBean.nuevoPuesto.nombre}" required="true" />
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <p:outputLabel for="descPuesto" value="Descripción" />
+                    <p:inputTextarea id="descPuesto" value="#{puestoBean.nuevoPuesto.descripcion}" rows="3" />
+                </div>
+                <p:commandButton value="Guardar Puesto" action="#{puestoBean.guardarPuesto}"
+                                 update=":formPuestos:dtPuestos :formPuestos:messages"
+                                 oncomplete="PF('dlgPuesto').hide()" />
+            </div>
+        </h:form>
+    </p:dialog>
+
+</h:body>
+</html>

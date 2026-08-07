@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Registro de Marcaciones</title>
+    <h:outputStylesheet name="css/estilos.css" />
+</h:head>
+<h:body style="padding: 20px; background-color:#f4f6f9;">
+
+    <h:form id="formMenu">
+        <p:menubar>
+            <p:menuitem value="Dashboard" icon="pi pi-fw pi-home" url="dashboard.xhtml" />
+            <p:menuitem value="Empleados" icon="pi pi-fw pi-users" url="empleados.xhtml" />
+            <p:menuitem value="Puestos" icon="pi pi-fw pi-briefcase" url="puestos.xhtml" />
+            <p:menuitem value="Usuarios" icon="pi pi-fw pi-user" url="usuarios.xhtml" />
+            <p:menuitem value="Marcaciones" icon="pi pi-fw pi-clock" url="marcaciones.xhtml" />
+            <p:divider layout="vertical" />
+            <p:menuitem value="Cerrar Sesión" icon="pi pi-fw pi-power-off" action="#{loginBean.cerrarSesion}" />
+        </p:menubar>
+    </h:form>
+
+    <h:form id="formMarcacion" style="margin-top:20px;">
+        <p:growl id="messages" showDetail="true" />
+
+        <p:card header="Registrar Marcación en Vivo" style="margin-bottom: 20px;">
+            <div class="ui-fluid style-form">
+                <div style="margin-bottom: 1rem;">
+                    <p:outputLabel for="empSel" value="Seleccionar Empleado:" />
+                    <p:selectOneMenu id="empSel" value="#{marcacionBean.idEmpleadoSel}" required="true">
+                        <f:selectItem itemLabel="-- Seleccionar --" itemValue="0" />
+                        <f:selectItems value="#{empleadoBean.listaEmpleados}" var="emp"
+                                       itemLabel="#{emp.nombre} #{emp.apellido}" itemValue="#{emp.idEmpleado}" />
+                    </p:selectOneMenu>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <p:outputLabel for="tipo" value="Tipo de Marcación:" />
+                    <p:selectOneButton id="tipo" value="#{marcacionBean.tipoMarcacion}">
+                        <f:selectItem itemLabel="ENTRADA" itemValue="ENTRADA" />
+                        <f:selectItem itemLabel="SALIDA" itemValue="SALIDA" />
+                    </p:selectOneButton>
+                </div>
+
+                <p:commandButton value="Registrar Marcación (AJAX)" action="#{marcacionBean.registrar}"
+                                 update="messages dtMarcaciones" icon="pi pi-clock" styleClass="ui-button-primary" />
+            </div>
+        </p:card>
+
+        <p:panel header="Histórico de Marcaciones">
+            <p:dataTable id="dtMarcaciones" value="#{marcacionBean.listaMarcaciones}" var="m"
+                         paginator="true" rows="10" responsiveLayout="scroll">
+                <p:column headerText="ID">
+                    <h:outputText value="#{m.idMarcacion}" />
+                </p:column>
+                <p:column headerText="Empleado">
+                    <h:outputText value="#{m.empleado.nombre} #{m.empleado.apellido}" />
+                </p:column>
+                <p:column headerText="Fecha y Hora">
+                    <h:outputText value="#{m.fechaHora}">
+                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" timeZone="America/Tegucigalpa" />
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Tipo">
+                    <h:outputText value="#{m.tipo}" style="font-weight:bold; color:#{m.tipo eq 'ENTRADA' ? 'green' : 'red'};" />
+                </p:column>
+            </p:dataTable>
+        </p:panel>
+    </h:form>
+
+</h:body>
+</html>

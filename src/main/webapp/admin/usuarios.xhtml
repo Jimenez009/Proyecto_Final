@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Gestión de Usuarios</title>
+    <h:outputStylesheet name="css/estilos.css" />
+</h:head>
+<h:body style="padding: 20px; background-color:#f4f6f9;">
+
+    <h:form id="formMenu">
+        <p:menubar>
+            <p:menuitem value="Dashboard" icon="pi pi-fw pi-home" url="dashboard.xhtml" />
+            <p:menuitem value="Empleados" icon="pi pi-fw pi-users" url="empleados.xhtml" />
+            <p:menuitem value="Puestos" icon="pi pi-fw pi-briefcase" url="puestos.xhtml" />
+            <p:menuitem value="Usuarios" icon="pi pi-fw pi-user" url="usuarios.xhtml" />
+            <p:menuitem value="Marcaciones" icon="pi pi-fw pi-clock" url="marcaciones.xhtml" />
+            <p:divider layout="vertical" />
+            <p:menuitem value="Cerrar Sesión" icon="pi pi-fw pi-power-off" action="#{loginBean.cerrarSesion}" />
+        </p:menubar>
+    </h:form>
+
+    <h:form id="formUsuarios" style="margin-top:20px;">
+        <p:panel header="Usuarios del Sistema">
+            <p:dataTable id="dtUsuarios" value="#{loginBean.usuarioLogueado}" var="u" responsiveLayout="scroll">
+                <p:column headerText="ID">
+                    <h:outputText value="#{loginBean.usuarioLogueado.idUsuario}" />
+                </p:column>
+                <p:column headerText="Nombre de Usuario">
+                    <h:outputText value="#{loginBean.usuarioLogueado.username}" />
+                </p:column>
+                <p:column headerText="Rol">
+                    <h:outputText value="#{loginBean.usuarioLogueado.rol}" />
+                </p:column>
+                <p:column headerText="Empleado Asociado">
+                    <h:outputText value="#{loginBean.usuarioLogueado.empleado.nombre} #{loginBean.usuarioLogueado.empleado.apellido}" />
+                </p:column>
+            </p:dataTable>
+        </p:panel>
+    </h:form>
+
+</h:body>
+</html>

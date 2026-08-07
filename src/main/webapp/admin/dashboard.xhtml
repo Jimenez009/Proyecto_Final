@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Dashboard - Panel de Control</title>
+    <h:outputStylesheet name="css/estilos.css" />
+</h:head>
+<h:body style="padding: 20px;">
+
+    <h:form>
+        <p:menubar>
+            <p:menuitem value="Dashboard" icon="pi pi-fw pi-home" url="dashboard.xhtml" />
+            <p:menuitem value="Empleados" icon="pi pi-fw pi-users" url="empleados.xhtml" />
+            <p:menuitem value="Puestos" icon="pi pi-fw pi-briefcase" url="puestos.xhtml" />
+            <p:menuitem value="Usuarios" icon="pi pi-fw pi-user" url="usuarios.xhtml" />
+            <p:menuitem value="Marcaciones" icon="pi pi-fw pi-clock" url="marcaciones.xhtml" />
+
+            <p:divider layout="vertical" />
+
+            <p:menuitem value="Cerrar Sesión" icon="pi pi-fw pi-power-off" action="#{loginBean.cerrarSesion}" />
+        </p:menubar>
+    </h:form>
+
+    <div style="margin-top:20px;">
+        <h2>Resumen General de Asistencia</h2>
+        <div style="width: 400px; margin: auto;">
+            <p:pieChart model="#{dashBoardBean.pieModel}" style="width: 100%; height: 300px;"/>
+        </div>
+    </div>
+
+</h:body>
+</html>
