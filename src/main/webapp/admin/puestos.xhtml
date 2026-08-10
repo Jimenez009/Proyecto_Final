@@ -4,9 +4,9 @@
       xmlns:p="http://primefaces.org/ui">
 <h:head>
     <title>Gestión de Puestos</title>
-    <h:outputStylesheet name="css/estilos.css" />
+    <h:outputStylesheet library="css" name="estilos.css" />
 </h:head>
-<h:body style="padding: 20px; background-color:#f4f6f9;">
+<h:body>
 
     <h:form id="formMenu">
         <p:menubar>
@@ -20,13 +20,13 @@
         </p:menubar>
     </h:form>
 
-    <h:form id="formPuestos" style="margin-top:20px;">
+    <h:form id="formPuestos" styleClass="main-form">
         <p:growl id="messages" showDetail="true" />
 
         <p:panel header="Listado de Puestos">
             <p:commandButton value="Nuevo Puesto" icon="pi pi-plus"
                              oncomplete="PF('dlgPuesto').show()"
-                             styleClass="ui-button-success" style="margin-bottom: 10px;" />
+                             styleClass="ui-button-success mb-10px" />
 
             <p:dataTable id="dtPuestos" value="#{puestoBean.listaPuestos}" var="p"
                          paginator="true" rows="10" responsiveLayout="scroll">
@@ -47,11 +47,11 @@
     <p:dialog header="Registrar Nuevo Puesto" widgetVar="dlgPuesto" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
         <h:form id="formNuevoPuesto">
             <div class="ui-fluid">
-                <div style="margin-bottom: 1rem;">
+                <div class="mb-1">
                     <p:outputLabel for="nombrePuesto" value="Nombre" />
                     <p:inputText id="nombrePuesto" value="#{puestoBean.nuevoPuesto.nombre}" required="true" />
                 </div>
-                <div style="margin-bottom: 1.5rem;">
+                <div class="mb-1-5">
                     <p:outputLabel for="descPuesto" value="Descripción" />
                     <p:inputTextarea id="descPuesto" value="#{puestoBean.nuevoPuesto.descripcion}" rows="3" />
                 </div>
