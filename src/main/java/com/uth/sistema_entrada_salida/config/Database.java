@@ -6,9 +6,9 @@ import java.sql.SQLException;
 
 public class Database {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/sistema_asistencia?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
+    private static final String URL = "jdbc:mysql://localhost:3306/sistema_asistencia?useSSL=false&serverTimezone=UTC";
     private static final String USER = "root";
-    private static final String PASSWORD = "TU_CONTRASEÑA_DE_MYSQL"; // Sustituye por tu clave de root
+    private static final String PASSWORD = "12345678"; // Sustituye por tu clave de root
 
     public static Connection getConnection() throws SQLException {
         try {
