@@ -3,30 +3,126 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui">
 <h:head>
-    <title>Dashboard - Panel de Control</title>
-    <h:outputStylesheet library="css" name="estilos.css" />
+    <title>Dashboard - Control de Asistencia</title>
+    <!-- Enlace directo mediante la ruta del contexto -->
+    <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/estilos.css" />
+
+    <!-- Librería Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="#{request.contextPath}/resources/js/dashboard.js?v=2"></script>
+
+    <!-- Script JS con el código del Dashboard -->
+    <h:outputScript library="js" name="animacion.js" />
 </h:head>
 <h:body>
 
-    <h:form>
+    <!-- Menú Principal -->
+    <h:form id="formMenu">
         <p:menubar>
             <p:menuitem value="Dashboard" icon="pi pi-fw pi-home" url="dashboard.xhtml" />
             <p:menuitem value="Empleados" icon="pi pi-fw pi-users" url="empleados.xhtml" />
             <p:menuitem value="Puestos" icon="pi pi-fw pi-briefcase" url="puestos.xhtml" />
             <p:menuitem value="Usuarios" icon="pi pi-fw pi-user" url="usuarios.xhtml" />
             <p:menuitem value="Marcaciones" icon="pi pi-fw pi-clock" url="marcaciones.xhtml" />
-
             <p:divider layout="vertical" />
-
             <p:menuitem value="Cerrar Sesión" icon="pi pi-fw pi-power-off" action="#{loginBean.cerrarSesion}" />
         </p:menubar>
     </h:form>
 
-    <div class="main-content">
-        <h2>Resumen General de Asistencia</h2>
-        <div class="chart-container">
-            <p:pieChart model="#{dashBoardBean.pieModel}" styleClass="chart-style" />
+    <div class="dashboard-wrapper">
+
+        <!-- Header con Reloj -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Resumen de Asistencia Diaria</h1>
+            <div class="live-clock-card">
+                <i class="pi pi-clock"></i>
+                <span id="reloj-digital">00:00:00</span>
+            </div>
         </div>
+
+        <!-- Contenedor oculto de paso de datos hacia JavaScript -->
+        <div id="dashboard-data"
+             data-total="#{dashboardBean.totalEmpleados}"
+             data-presentes="#{dashboardBean.empleadosPresentes}"
+             data-ausentes="#{dashboardBean.empleadosAusentes}">
+        </div>
+
+        <!-- Tarjetas KPI -->
+        <div class="kpi-container">
+            <div class="kpi-box blue">
+                <div class="kpi-details">
+                    <div class="kpi-label">Total Empleados</div>
+                    <div class="kpi-number"><h:outputText value="#{dashboardBean.totalEmpleados}" /></div>
+                </div>
+                <div class="kpi-icon-wrapper">
+                    <i class="pi pi-users"></i>
+                </div>
+            </div>
+
+            <div class="kpi-box green">
+                <div class="kpi-details">
+                    <div class="kpi-label">Presentes Hoy</div>
+                    <div class="kpi-number"><h:outputText value="#{dashboardBean.empleadosPresentes}" /></div>
+                </div>
+                <div class="kpi-icon-wrapper">
+                    <i class="pi pi-user-plus"></i>
+                </div>
+            </div>
+
+            <div class="kpi-box red">
+                <div class="kpi-details">
+                    <div class="kpi-label">Ausentes Hoy</div>
+                    <div class="kpi-number"><h:outputText value="#{dashboardBean.empleadosAusentes}" /></div>
+                </div>
+                <div class="kpi-icon-wrapper">
+                    <i class="pi pi-user-minus"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráficas Canvas (Las 4 Gráficas completas) -->
+        <div class="charts-wrapper">
+            <!-- Gráfica 1: Barras - Personal Presente -->
+            <div class="chart-box">
+                <div class="chart-header">
+                    <h3>Asistencia de Personal (Presentes)</h3>
+                </div>
+                <div class="chart-canvas-container">
+                    <canvas id="chartPresentes"></canvas>
+                </div>
+            </div>
+
+            <!-- Gráfica 2: Barras - Personal Ausente -->
+            <div class="chart-box">
+                <div class="chart-header">
+                    <h3>Ausentismo del Día (Ausentes)</h3>
+                </div>
+                <div class="chart-canvas-container">
+                    <canvas id="chartAusentes"></canvas>
+                </div>
+            </div>
+
+            <!-- Gráfica 3: Dona - Porcentaje del Día -->
+            <div class="chart-box">
+                <div class="chart-header">
+                    <h3>Distribución Porcentual del Día</h3>
+                </div>
+                <div class="chart-canvas-container">
+                    <canvas id="chartDona"></canvas>
+                </div>
+            </div>
+
+            <!-- Gráfica 4: Líneas - Tendencia Semanal -->
+            <div class="chart-box">
+                <div class="chart-header">
+                    <h3>Tendencia de Asistencia Semanal</h3>
+                </div>
+                <div class="chart-canvas-container">
+                    <canvas id="chartTendencia"></canvas>
+                </div>
+            </div>
+        </div>
+
     </div>
 
 </h:body>

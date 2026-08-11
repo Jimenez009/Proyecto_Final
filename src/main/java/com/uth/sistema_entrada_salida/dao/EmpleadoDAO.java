@@ -41,6 +41,24 @@ public class EmpleadoDAO {
         return lista;
     }
 
+    // Método para contar el total de empleados
+    public int contarEmpleados() {
+        int total = 0;
+        String sql = "SELECT COUNT(*) AS total FROM empleado";
+
+        try (Connection conn = Database.getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                total = rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
+
     // Método para registrar un nuevo empleado
     public boolean guardar(Empleado e) {
         String sql = "INSERT INTO empleado (nombre, apellido, identidad, id_puesto) VALUES (?, ?, ?, ?)";

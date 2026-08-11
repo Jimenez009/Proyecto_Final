@@ -41,7 +41,7 @@ public class MarcacionDAO {
         return lista;
     }
 
-    // NUEVO MÉTODO: Obtiene las marcaciones pasadas de un solo empleado ordenadas por fecha más reciente
+    // Obtiene las marcaciones pasadas de un solo empleado ordenadas por fecha más reciente
     public List<Marcacion> listarMarcacionesPorEmpleado(int idEmpleado) {
         List<Marcacion> lista = new ArrayList<>();
         String sql = "SELECT m.*, e.nombre, e.apellido FROM marcacion m " +
@@ -93,7 +93,7 @@ public class MarcacionDAO {
         }
     }
 
-    // NUEVO MÉTODO: Filtra las marcaciones ingresando un rango de fechas para reportes
+    // Filtra las marcaciones ingresando un rango de fechas para reportes
     public List<Marcacion> filtrarPorRangoFecha(Date fechaInicio, Date fechaFin) {
         List<Marcacion> lista = new ArrayList<>();
         String sql = "SELECT m.*, e.nombre, e.apellido FROM marcacion m " +
@@ -128,4 +128,28 @@ public class MarcacionDAO {
         }
         return lista;
     }
+
+
+    // NUEVO MÉTODO: Cuenta cuántos empleados distintos han marcado 'ENTRADA' el día de hoy
+    public int contarEmpleadosPresentesHoy() {
+        int count = 0;
+        String sql = "SELECT COUNT(DISTINCT id_empleado) AS total " +
+                "FROM marcacion " +
+                "WHERE DATE(fecha_hora) = CURDATE() " +
+                "AND UPPER(tipo) = 'ENTRADA'";
+
+        try (Connection conn = Database.getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                count = rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+
 }
