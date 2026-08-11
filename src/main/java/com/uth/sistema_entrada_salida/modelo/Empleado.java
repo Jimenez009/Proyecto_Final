@@ -1,5 +1,4 @@
 package com.uth.sistema_entrada_salida.modelo;
-
 import java.io.Serializable;
 
 public class Empleado implements Serializable {
@@ -34,7 +33,6 @@ public class Empleado implements Serializable {
     public void setIdentidad(String identidad) { this.identidad = identidad; }
 
     public Puesto getPuesto() {
-        // Garantiza que nunca devuelva nulo cuando JSF intente acceder a sus propiedades
         if (this.puesto == null) {
             this.puesto = new Puesto();
         }
