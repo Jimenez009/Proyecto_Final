@@ -113,6 +113,7 @@ public class UsuarioDAO {
         }
     }
 
+
     // NUEVO MÉTODO: Para eliminar un usuario del sistema
     public boolean eliminar(int idUsuario) {
         String sql = "DELETE FROM usuario WHERE id_usuario = ?";

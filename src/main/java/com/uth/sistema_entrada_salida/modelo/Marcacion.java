@@ -1,8 +1,10 @@
 package com.uth.sistema_entrada_salida.modelo;
 
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Marcacion {
+public class Marcacion implements Serializable {
     private int idMarcacion;
     private Empleado empleado;
     private Date fechaHora;
@@ -28,4 +30,13 @@ public class Marcacion {
 
     public String getTipo() { return tipo; }
     public void setTipo(String tipo) { this.tipo = tipo; }
+
+    // NUEVO MÉTODO: Formatea la fecha directamente a String para JSF
+    public String getFechaHoraFormateada() {
+        if (fechaHora != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            return sdf.format(fechaHora);
+        }
+        return "";
+    }
 }

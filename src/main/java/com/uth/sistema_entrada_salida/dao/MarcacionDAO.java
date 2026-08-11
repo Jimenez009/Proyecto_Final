@@ -17,7 +17,6 @@ public class MarcacionDAO {
                 "INNER JOIN empleado e ON m.id_empleado = e.id_empleado " +
                 "ORDER BY m.fecha_hora DESC";
 
-        // CORRECCIÓN: Se utiliza getConexion()
         try (Connection conn = Database.getConexion();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -42,11 +41,45 @@ public class MarcacionDAO {
         return lista;
     }
 
+    // NUEVO MÉTODO: Obtiene las marcaciones pasadas de un solo empleado ordenadas por fecha más reciente
+    public List<Marcacion> listarMarcacionesPorEmpleado(int idEmpleado) {
+        List<Marcacion> lista = new ArrayList<>();
+        String sql = "SELECT m.*, e.nombre, e.apellido FROM marcacion m " +
+                "INNER JOIN empleado e ON m.id_empleado = e.id_empleado " +
+                "WHERE m.id_empleado = ? " +
+                "ORDER BY m.fecha_hora DESC";
+
+        try (Connection conn = Database.getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, idEmpleado);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Empleado emp = new Empleado();
+                    emp.setIdEmpleado(rs.getInt("id_empleado"));
+                    emp.setNombre(rs.getString("nombre"));
+                    emp.setApellido(rs.getString("apellido"));
+
+                    Marcacion m = new Marcacion();
+                    m.setIdMarcacion(rs.getInt("id_marcacion"));
+                    m.setEmpleado(emp);
+                    m.setFechaHora(rs.getTimestamp("fecha_hora"));
+                    m.setTipo(rs.getString("tipo"));
+
+                    lista.add(m);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
     // Método para registrar una nueva entrada o salida
     public boolean registrarMarcacion(int idEmpleado, String tipo) {
         String sql = "INSERT INTO marcacion (id_empleado, fecha_hora, tipo) VALUES (?, NOW(), ?)";
 
-        // CORRECCIÓN: Se utiliza getConexion()
         try (Connection conn = Database.getConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 

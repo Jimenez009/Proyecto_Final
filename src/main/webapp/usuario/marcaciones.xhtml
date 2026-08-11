@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Marcaciones - Sistema Entrada y Salida</title>
+    <h:outputStylesheet library="css" name="estilos.css" />
+    <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/estilos.css?v=5.0" />
+</h:head>
+
+<h:body>
+
+    <!-- Barra de Navegación Superior -->
+    <div class="top-navbar">
+        <div class="nav-group">
+            <h:link outcome="/usuario/marcaciones.xhtml" styleClass="nav-item active">
+                <i class="pi pi-clock"></i>
+                <span>Marcaciones</span>
+            </h:link>
+        </div>
+
+        <h:form styleClass="logout-form">
+            <p:commandLink action="#{loginBean.cerrarSesion}" styleClass="nav-item btn-logout-link">
+                <i class="pi pi-power-off"></i>
+                <span>Cerrar Sesión</span>
+            </p:commandLink>
+        </h:form>
+    </div>
+
+    <p:growl id="messages" showDetail="true" />
+
+    <div class="main-container" style="max-width: 1000px; margin: 20px auto; padding: 0 15px;">
+
+        <!-- Tarjeta 1: Formulario de Registro de Asistencia -->
+        <div class="card-panel" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px;">
+            <h2 class="card-title" style="margin-top: 0;">Registrar Asistencia</h2>
+            <div class="card-subtitle" style="margin-bottom: 15px; color: #555;">
+                Bienvenido, <strong><h:outputText value="#{loginBean.usuarioLogueado.username}" /></strong>
+            </div>
+
+            <h:form id="formMarcacion">
+                <div class="reloj-container" style="margin-bottom: 15px;">
+                    <p:clock pattern="HH:mm:ss - dd/MM/yyyy" />
+                </div>
+
+                <div class="botones-marcacion-container" style="display: flex; gap: 10px;">
+                    <p:commandButton value="Marcar Entrada"
+                                     action="#{marcacionBean.registrarEntrada}"
+                                     update=":messages :formTabla:tablaMisMarcaciones"
+                                     icon="pi pi-sign-in"
+                                     styleClass="ui-button-success" />
+
+                    <p:commandButton value="Marcar Salida"
+                                     action="#{marcacionBean.registrarSalida}"
+                                     update=":messages :formTabla:tablaMisMarcaciones"
+                                     icon="pi pi-sign-out"
+                                     styleClass="ui-button-warning" />
+                </div>
+            </h:form>
+        </div>
+
+        <!-- Tarjeta 2: Tabla con el Historial de Marcaciones -->
+        <div class="card-panel" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h3 class="card-title" style="margin-top: 0; margin-bottom: 15px;">Mis Marcaciones Recientes</h3>
+
+            <h:form id="formTabla">
+                <p:dataTable id="tablaMisMarcaciones"
+                             value="#{marcacionBean.listaMarcacionesUsuario}"
+                             var="m"
+                             paginator="true"
+                             rows="5"
+                             paginatorPosition="bottom"
+                             emptyMessage="No tienes marcaciones registradas todavía.">
+
+                    <p:column headerText="ID Marcación" style="width: 120px; text-align: center;">
+                        <h:outputText value="#{m.idMarcacion}" />
+                    </p:column>
+
+                    <p:column headerText="Fecha y Hora">
+                        <h:outputText value="#{m.fechaHoraFormateada}" />
+                    </p:column>
+
+                    <p:column headerText="Tipo de Registro" style="text-align: center;">
+                        <h:outputText value="#{m.tipo}"
+                                      style="font-weight: bold; padding: 4px 10px; border-radius: 4px; color: #fff; background-color: #{m.tipo eq 'ENTRADA' ? '#2e7d32' : '#f57c00'};" />
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </div>
+
+    </div>
+
+</h:body>
+</html>

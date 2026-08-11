@@ -21,10 +21,14 @@ public class LoginBean implements Serializable {
     public String iniciarSesion() {
         usuarioLogueado = usuarioDAO.validarLogin(username, password);
 
-        System.out.println("====================================");
-        System.out.println("INTENTANDO LOGIN -> Usuario: '" + username + "' | Clave: '" + password + "'");
         if (usuarioLogueado != null) {
-            return "/admin/dashboard.xhtml?faces-redirect=true";
+            String rol = usuarioLogueado.getRol();
+
+            if ("ADMIN".equalsIgnoreCase(rol) || "ADMINISTRADOR".equalsIgnoreCase(rol)) {
+                return "/admin/dashboard.xhtml?faces-redirect=true";
+            } else {
+                return "/usuario/marcaciones.xhtml?faces-redirect=true";
+            }
         } else {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Usuario o contraseña incorrectos"));
@@ -34,7 +38,12 @@ public class LoginBean implements Serializable {
 
     public String cerrarSesion() {
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-        return "/templates/login.xhtml?faces-redirect=true";
+        return "/login.xhtml?faces-redirect=true";
+    }
+
+    public boolean esAdmin() {
+        return usuarioLogueado != null &&
+                ("ADMIN".equalsIgnoreCase(usuarioLogueado.getRol()) || "ADMINISTRADOR".equalsIgnoreCase(usuarioLogueado.getRol()));
     }
 
     // Getters y Setters
