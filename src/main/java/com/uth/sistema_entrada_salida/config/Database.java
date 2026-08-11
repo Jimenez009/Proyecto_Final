@@ -8,16 +8,15 @@ public class Database {
 
     private static final String HOST = "mysql-3b4936c1-proyectofinal1.c.aivencloud.com";
 
-    // CORRECCIÓN: 15099 es el puerto asignado por Aiven
+
     private static final String PORT = "15099";
 
-    // CORRECCIÓN: Aiven nombra la base de datos inicial como "defaultdb"
+
     private static final String DB_NAME = "sistema_asistencia";
 
     private static final String USER = "avnadmin";
     private static final String PASSWORD = "AVNS_B7GguJsrloKH_waDBlm";
 
-    // Cadena de conexión con los parámetros SSL requeridos por Aiven
     private static final String URL = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DB_NAME +
             "?useSSL=true&requireSSL=true&serverTimezone=UTC";
 
