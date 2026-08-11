@@ -2,6 +2,7 @@ package com.uth.sistema_entrada_salida.controlador;
 
 import com.uth.sistema_entrada_salida.dao.EmpleadoDAO;
 import com.uth.sistema_entrada_salida.modelo.Empleado;
+import com.uth.sistema_entrada_salida.modelo.Puesto; // <--- IMPORTACIÓN AGREGADA
 
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
@@ -20,6 +21,11 @@ public class EmpleadoBean implements Serializable {
     @PostConstruct
     public void init() {
         cargarEmpleados();
+    }
+
+    public void prepararNuevoEmpleado() {
+        this.nuevoEmpleado = new Empleado();
+        this.nuevoEmpleado.setPuesto(new Puesto());
     }
 
     public void cargarEmpleados() {

@@ -30,7 +30,7 @@
                              styleClass="ui-button-success mb-10px" />
 
             <p:dataTable id="dtEmpleados" value="#{empleadoBean.listaEmpleados}" var="emp"
-                         paginator="true" rows="10" responsiveLayout="scroll">
+                         paginator="true" rows="10" paginatorPosition="bottom" responsiveLayout="scroll">
                 <p:column headerText="ID">
                     <h:outputText value="#{emp.idEmpleado}" />
                 </p:column>

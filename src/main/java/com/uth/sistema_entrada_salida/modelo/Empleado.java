@@ -1,20 +1,24 @@
 package com.uth.sistema_entrada_salida.modelo;
 
-public class Empleado {
+import java.io.Serializable;
+
+public class Empleado implements Serializable {
     private int idEmpleado;
     private String nombre;
     private String apellido;
     private String identidad;
-    private Puesto puesto;
+    private Puesto puesto = new Puesto(); // Inicialización directa para evitar nulos en la vista JSF
 
-    public Empleado() {}
+    public Empleado() {
+        this.puesto = new Puesto();
+    }
 
     public Empleado(int idEmpleado, String nombre, String apellido, String identidad, Puesto puesto) {
         this.idEmpleado = idEmpleado;
         this.nombre = nombre;
         this.apellido = apellido;
         this.identidad = identidad;
-        this.puesto = puesto;
+        this.puesto = (puesto != null) ? puesto : new Puesto();
     }
 
     public int getIdEmpleado() { return idEmpleado; }
@@ -29,6 +33,13 @@ public class Empleado {
     public String getIdentidad() { return identidad; }
     public void setIdentidad(String identidad) { this.identidad = identidad; }
 
-    public Puesto getPuesto() { return puesto; }
+    public Puesto getPuesto() {
+        // Garantiza que nunca devuelva nulo cuando JSF intente acceder a sus propiedades
+        if (this.puesto == null) {
+            this.puesto = new Puesto();
+        }
+        return puesto;
+    }
+
     public void setPuesto(Puesto puesto) { this.puesto = puesto; }
 }
