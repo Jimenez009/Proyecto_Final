@@ -6,16 +6,40 @@ import java.sql.SQLException;
 
 public class Database {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/sistema_asistencia?useSSL=false&serverTimezone=UTC";
-    private static final String USER = "root";
-    private static final String PASSWORD = "12345678"; // Sustituye por tu clave de root
+    private static final String HOST = "mysql-3b4936c1-proyectofinal1.c.aivencloud.com";
 
-    public static Connection getConnection() throws SQLException {
+    // CORRECCIÓN: 15099 es el puerto asignado por Aiven
+    private static final String PORT = "15099";
+
+    // CORRECCIÓN: Aiven nombra la base de datos inicial como "defaultdb"
+    private static final String DB_NAME = "sistema_asistencia";
+
+    private static final String USER = "avnadmin";
+    private static final String PASSWORD = "AVNS_B7GguJsrloKH_waDBlm";
+
+    // Cadena de conexión con los parámetros SSL requeridos por Aiven
+    private static final String URL = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DB_NAME +
+            "?useSSL=true&requireSSL=true&serverTimezone=UTC";
+
+    public static Connection getConexion() {
+        Connection conexion = null;
         try {
+            // Cargar el driver
             Class.forName("com.mysql.cj.jdbc.Driver");
-            return DriverManager.getConnection(URL, USER, PASSWORD);
+            // Establecer la conexión
+            conexion = DriverManager.getConnection(URL, USER, PASSWORD);
+            System.out.println("¡Conexión exitosa a la base de datos de Aiven para el sistema de control de entradas y salidas!");
+
         } catch (ClassNotFoundException e) {
-            throw new SQLException("Driver JDBC de MySQL no encontrado", e);
+            System.err.println("Error: No se encontró el driver de MySQL. Asegúrate de tener la dependencia en el pom.xml. " + e.getMessage());
+        } catch (SQLException e) {
+            System.err.println("Error al conectar con Aiven: " + e.getMessage());
         }
+        return conexion;
+    }
+
+    // Método para probar la conexión directamente
+    public static void main(String[] args) {
+        getConexion();
     }
 }
