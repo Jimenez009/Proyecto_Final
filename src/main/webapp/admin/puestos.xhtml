@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 <h:head>
     <title>Gestión de Puestos</title>
@@ -25,6 +26,8 @@
 
         <p:panel header="Listado de Puestos">
             <p:commandButton value="Nuevo Puesto" icon="pi pi-plus"
+                             actionListener="#{puestoBean.prepararNuevoPuesto}"
+                             update=":formNuevoPuesto"
                              oncomplete="PF('dlgPuesto').show()"
                              styleClass="ui-button-success mb-10px" />
 
@@ -38,6 +41,13 @@
                 </p:column>
                 <p:column headerText="Descripción">
                     <h:outputText value="#{p.descripcion}" />
+                </p:column>
+                <p:column headerText="Acciones" style="text-align: center; width: 100px;">
+                    <p:commandButton icon="pi pi-trash" styleClass="ui-button-danger rounded-button"
+                                     action="#{puestoBean.eliminar(p)}"
+                                     update=":formPuestos:dtPuestos :formPuestos:messages">
+                        <p:confirm header="Confirmación" message="¿Estás seguro de eliminar este puesto?" icon="pi pi-info-circle"/>
+                    </p:commandButton>
                 </p:column>
             </p:dataTable>
         </p:panel>
@@ -56,11 +66,17 @@
                     <p:inputTextarea id="descPuesto" value="#{puestoBean.nuevoPuesto.descripcion}" rows="3" />
                 </div>
                 <p:commandButton value="Guardar Puesto" action="#{puestoBean.guardarPuesto}"
-                                 update=":formPuestos:dtPuestos :formPuestos:messages"
-                                 oncomplete="PF('dlgPuesto').hide()" />
+                                 update=":formPuestos:dtPuestos :formPuestos:messages formNuevoPuesto"
+                                 oncomplete="if(!args.validationFailed) PF('dlgPuesto').hide();" />
             </div>
         </h:form>
     </p:dialog>
+
+    <!-- Diálogo de confirmación global para PrimeFaces -->
+    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+        <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes ui-button-danger" />
+    </p:confirmDialog>
 
 </h:body>
 </html>

@@ -68,19 +68,21 @@ public class PuestoDAO {
         }
     }
 
+
+
     // NUEVO MÉTODO: Para eliminar un puesto por su ID
     public boolean eliminar(int idPuesto) {
         String sql = "DELETE FROM puesto WHERE id_puesto = ?";
-
         try (Connection conn = Database.getConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, idPuesto);
-
             return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
             return false;
         }
     }
+
+
 }

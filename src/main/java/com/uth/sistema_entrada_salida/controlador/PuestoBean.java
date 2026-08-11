@@ -28,6 +28,23 @@ public class PuestoBean implements Serializable {
         listaPuestos = puestoDAO.listarPuestos();
     }
 
+    public void eliminar(Puesto p) {
+        try {
+            boolean exito = puestoDAO.eliminar(p.getIdPuesto()); // <- Uso correcto del getter
+            if (exito) {
+                cargarPuestos(); // Método que recarga la lista de puestos
+
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Puesto eliminado correctamente");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            } else {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo eliminar el puesto");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void guardarPuesto() {
         if (puestoDAO.guardar(nuevoPuesto)) {
             FacesContext.getCurrentInstance().addMessage(null,

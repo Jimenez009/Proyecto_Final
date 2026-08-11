@@ -26,6 +26,8 @@
 
         <p:panel header="Listado de Empleados">
             <p:commandButton value="Nuevo Empleado" icon="pi pi-plus"
+                             actionListener="#{empleadoBean.prepararNuevoEmpleado}"
+                             update=":formNuevoEmpleado"
                              oncomplete="PF('dlgEmpleado').show()"
                              styleClass="ui-button-success mb-10px" />
 
@@ -45,6 +47,13 @@
                 </p:column>
                 <p:column headerText="Puesto">
                     <h:outputText value="#{emp.puesto.nombre}" />
+                </p:column>
+                <p:column headerText="Acciones" style="text-align: center; width: 100px;">
+                    <p:commandButton icon="pi pi-trash" styleClass="ui-button-danger rounded-button"
+                                     action="#{empleadoBean.eliminar(emp)}"
+                                     update=":formEmpleados:dtEmpleados :formEmpleados:messages">
+                        <p:confirm header="Confirmación" message="¿Estás seguro de eliminar a este empleado?" icon="pi pi-info-circle"/>
+                    </p:commandButton>
                 </p:column>
             </p:dataTable>
         </p:panel>
@@ -73,12 +82,18 @@
                         <f:selectItems value="#{puestoBean.listaPuestos}" var="p" itemLabel="#{p.nombre}" itemValue="#{p.idPuesto}" />
                     </p:selectOneMenu>
                 </div>
-                <p:commandButton value="Guardar" action="#{empleadoBean.cargarEmpleados}"
-                                 update=":formEmpleados:dtEmpleados :formEmpleados:messages"
-                                 oncomplete="PF('dlgEmpleado').hide()" />
+                <p:commandButton value="Guardar" action="#{empleadoBean.guardar}"
+                                 update=":formEmpleados:dtEmpleados :formEmpleados:messages formNuevoEmpleado"
+                                 oncomplete="if(!args.validationFailed) PF('dlgEmpleado').hide();" />
             </div>
         </h:form>
     </p:dialog>
+
+    <!-- Diálogo de confirmación global para PrimeFaces -->
+    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+        <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes ui-button-danger" />
+    </p:confirmDialog>
 
 </h:body>
 </html>
