@@ -4,7 +4,11 @@ import com.uth.sistema_entrada_salida.config.Database;
 import com.uth.sistema_entrada_salida.modelo.Empleado;
 import com.uth.sistema_entrada_salida.modelo.Puesto;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,21 +63,71 @@ public class EmpleadoDAO {
         return total;
     }
 
-    // Método para registrar un nuevo empleado
-    public boolean guardar(Empleado e) {
-        String sql = "INSERT INTO empleado (nombre, apellido, identidad, id_puesto) VALUES (?, ?, ?, ?)";
-        try (Connection conn = Database.getConexion();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+    // Método para registrar un nuevo empleado y su usuario de acceso en la misma transacción
+    public boolean guardarConUsuario(Empleado e, String username, String password, String rol) {
+        String sqlEmpleado = "INSERT INTO empleado (nombre, apellido, identidad, id_puesto) VALUES (?, ?, ?, ?)";
+        String sqlUsuario = "INSERT INTO usuario (username, password, rol, id_empleado) VALUES (?, ?, ?, ?)";
 
-            ps.setString(1, e.getNombre());
-            ps.setString(2, e.getApellido());
-            ps.setString(3, e.getIdentidad());
-            ps.setInt(4, e.getPuesto().getIdPuesto());
+        Connection conn = null;
+        try {
+            conn = Database.getConexion();
+            conn.setAutoCommit(false); // Inicia la transacción
 
-            return ps.executeUpdate() > 0;
+            // 1. Insertar el Empleado y obtener el id_empleado generado
+            try (PreparedStatement psEmp = conn.prepareStatement(sqlEmpleado, Statement.RETURN_GENERATED_KEYS)) {
+                psEmp.setString(1, e.getNombre());
+                psEmp.setString(2, e.getApellido());
+                psEmp.setString(3, e.getIdentidad());
+                psEmp.setInt(4, e.getPuesto().getIdPuesto());
+
+                int filasAfectadas = psEmp.executeUpdate();
+                if (filasAfectadas == 0) {
+                    conn.rollback();
+                    return false;
+                }
+
+                int idEmpleadoGenerado = 0;
+                try (ResultSet rs = psEmp.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        idEmpleadoGenerado = rs.getInt(1);
+                    }
+                }
+
+                // 2. Insertar el Usuario vinculado al empleado creado
+                if (idEmpleadoGenerado > 0 && username != null && !username.trim().isEmpty()) {
+                    try (PreparedStatement psUser = conn.prepareStatement(sqlUsuario)) {
+                        psUser.setString(1, username);
+                        psUser.setString(2, password);
+                        psUser.setString(3, rol);
+                        psUser.setInt(4, idEmpleadoGenerado);
+
+                        psUser.executeUpdate();
+                    }
+                }
+            }
+
+            conn.commit(); // Confirmar cambios si todo fue exitoso
+            return true;
+
         } catch (SQLException ex) {
+            if (conn != null) {
+                try {
+                    conn.rollback(); // Cancelar cambios si ocurre un error
+                } catch (SQLException exRollback) {
+                    exRollback.printStackTrace();
+                }
+            }
             ex.printStackTrace();
             return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException exClose) {
+                    exClose.printStackTrace();
+                }
+            }
         }
     }
 

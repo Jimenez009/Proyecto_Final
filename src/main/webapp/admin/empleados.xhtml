@@ -59,29 +59,56 @@
         </p:panel>
     </h:form>
 
-    <!-- Diálogo Registrar Empleado -->
+    <!-- Diálogo Registrar Empleado y Cuenta de Usuario -->
     <p:dialog header="Registrar Empleado" widgetVar="dlgEmpleado" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
         <h:form id="formNuevoEmpleado">
             <div class="ui-fluid">
+                <!-- Datos del Empleado -->
                 <div class="mb-1">
-                    <p:outputLabel for="nombre" value="Nombre" />
+                    <p:outputLabel for="nombre" value="Nombre *" />
                     <p:inputText id="nombre" value="#{empleadoBean.nuevoEmpleado.nombre}" required="true" />
                 </div>
                 <div class="mb-1">
-                    <p:outputLabel for="apellido" value="Apellido" />
+                    <p:outputLabel for="apellido" value="Apellido *" />
                     <p:inputText id="apellido" value="#{empleadoBean.nuevoEmpleado.apellido}" required="true" />
                 </div>
                 <div class="mb-1">
-                    <p:outputLabel for="identidad" value="Identidad" />
+                    <p:outputLabel for="identidad" value="Identidad *" />
                     <p:inputText id="identidad" value="#{empleadoBean.nuevoEmpleado.identidad}" required="true" />
                 </div>
                 <div class="mb-1-5">
-                    <p:outputLabel for="puesto" value="Puesto" />
+                    <p:outputLabel for="puesto" value="Puesto *" />
                     <p:selectOneMenu id="puesto" value="#{empleadoBean.nuevoEmpleado.puesto.idPuesto}" required="true">
                         <f:selectItem itemLabel="Seleccione un puesto" itemValue="" />
                         <f:selectItems value="#{puestoBean.listaPuestos}" var="p" itemLabel="#{p.nombre}" itemValue="#{p.idPuesto}" />
                     </p:selectOneMenu>
                 </div>
+
+                <!-- Datos para la Cuenta de Usuario -->
+                <p:divider align="left">
+                    <span class="ui-badge">Cuenta de Acceso</span>
+                </p:divider>
+
+                <div class="mb-1">
+                    <p:outputLabel for="username" value="Usuario *" />
+                    <p:inputText id="username" value="#{empleadoBean.username}" required="true" />
+                </div>
+
+                <div class="mb-1">
+                    <p:outputLabel for="password" value="Contraseña *" />
+                    <p:password id="password" value="#{empleadoBean.password}" required="true" feedback="false" />
+                </div>
+
+                <div class="mb-1-5">
+                    <p:outputLabel for="rol" value="Rol de Acceso *" />
+                    <p:selectOneMenu id="rol" value="#{empleadoBean.rol}" required="true">
+                        <f:selectItem itemLabel="Empleado / Usuario" itemValue="USER" />
+                        <f:selectItem itemLabel="Administrador" itemValue="ADMIN" />
+                        <f:selectItem itemLabel="Supervisor" itemValue="SUPERVISOR" />
+                        <f:selectItem itemLabel="Gerente" itemValue="GERENTE" />
+                    </p:selectOneMenu>
+                </div>
+
                 <p:commandButton value="Guardar" action="#{empleadoBean.guardar}"
                                  update=":formEmpleados:dtEmpleados :formEmpleados:messages formNuevoEmpleado"
                                  oncomplete="if(!args.validationFailed) PF('dlgEmpleado').hide();" />

@@ -5,6 +5,8 @@ import com.uth.sistema_entrada_salida.modelo.Empleado;
 import com.uth.sistema_entrada_salida.modelo.Puesto;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 import java.io.Serializable;
@@ -18,9 +20,15 @@ public class EmpleadoBean implements Serializable {
     private Empleado nuevoEmpleado = new Empleado();
     private EmpleadoDAO empleadoDAO = new EmpleadoDAO();
 
+    // Propiedades para la creación del usuario asociado
+    private String username;
+    private String password;
+    private String rol = "USER";
+
     @PostConstruct
     public void init() {
         cargarEmpleados();
+        prepararNuevoEmpleado();
     }
 
     public void eliminar(Empleado emp) {
@@ -29,13 +37,13 @@ public class EmpleadoBean implements Serializable {
             if (exito) {
                 cargarEmpleados(); // Recarga la lista para que desaparezca de la tabla
 
-                jakarta.faces.application.FacesMessage msg = new jakarta.faces.application.FacesMessage(
-                        jakarta.faces.application.FacesMessage.SEVERITY_INFO, "Éxito", "Empleado eliminado correctamente");
-                jakarta.faces.context.FacesContext.getCurrentInstance().addMessage(null, msg);
+                FacesMessage msg = new FacesMessage(
+                        FacesMessage.SEVERITY_INFO, "Éxito", "Empleado eliminado correctamente");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
             } else {
-                jakarta.faces.application.FacesMessage msg = new jakarta.faces.application.FacesMessage(
-                        jakarta.faces.application.FacesMessage.SEVERITY_ERROR, "Error", "No se pudo eliminar el empleado");
-                jakarta.faces.context.FacesContext.getCurrentInstance().addMessage(null, msg);
+                FacesMessage msg = new FacesMessage(
+                        FacesMessage.SEVERITY_ERROR, "Error", "No se pudo eliminar el empleado");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -45,6 +53,9 @@ public class EmpleadoBean implements Serializable {
     public void prepararNuevoEmpleado() {
         this.nuevoEmpleado = new Empleado();
         this.nuevoEmpleado.setPuesto(new Puesto());
+        this.username = "";
+        this.password = "";
+        this.rol = "USER";
     }
 
     public void cargarEmpleados() {
@@ -53,18 +64,19 @@ public class EmpleadoBean implements Serializable {
 
     public void guardar() {
         try {
-            boolean exito = empleadoDAO.guardar(nuevoEmpleado);
+            // Guarda el empleado y crea su usuario asociado mediante la transacción del DAO
+            boolean exito = empleadoDAO.guardarConUsuario(nuevoEmpleado, username, password, rol);
             if (exito) {
                 cargarEmpleados(); // Actualiza la tabla automáticamente
-                prepararNuevoEmpleado(); // Limpia el formulario
+                prepararNuevoEmpleado(); // Limpia el formulario y campos de usuario
 
-                jakarta.faces.application.FacesMessage msg = new jakarta.faces.application.FacesMessage(
-                        jakarta.faces.application.FacesMessage.SEVERITY_INFO, "Éxito", "Empleado registrado correctamente");
-                jakarta.faces.context.FacesContext.getCurrentInstance().addMessage(null, msg);
+                FacesMessage msg = new FacesMessage(
+                        FacesMessage.SEVERITY_INFO, "Éxito", "Empleado y usuario registrados correctamente");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
             } else {
-                jakarta.faces.application.FacesMessage msg = new jakarta.faces.application.FacesMessage(
-                        jakarta.faces.application.FacesMessage.SEVERITY_ERROR, "Error", "No se pudo registrar el empleado");
-                jakarta.faces.context.FacesContext.getCurrentInstance().addMessage(null, msg);
+                FacesMessage msg = new FacesMessage(
+                        FacesMessage.SEVERITY_ERROR, "Error", "No se pudo registrar el empleado");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -77,4 +89,13 @@ public class EmpleadoBean implements Serializable {
 
     public Empleado getNuevoEmpleado() { return nuevoEmpleado; }
     public void setNuevoEmpleado(Empleado nuevoEmpleado) { this.nuevoEmpleado = nuevoEmpleado; }
+
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+
+    public String getRol() { return rol; }
+    public void setRol(String rol) { this.rol = rol; }
 }
